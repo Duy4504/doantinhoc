@@ -36,3 +36,6 @@ D:\Quản lí chi tiêu\QuanLyChiTieu\obj\Debug\net6.0-windows\refint\QuanLyChiT
 D:\Quản lí chi tiêu\QuanLyChiTieu\obj\Debug\net6.0-windows\QuanLyChiTieu.pdb
 D:\Quản lí chi tiêu\QuanLyChiTieu\obj\Debug\net6.0-windows\QuanLyChiTieu.genruntimeconfig.cache
 D:\Quản lí chi tiêu\QuanLyChiTieu\obj\Debug\net6.0-windows\ref\QuanLyChiTieu.dll
+D:\Quản lí chi tiêu\QuanLyChiTieu\obj\Debug\net6.0-windows\QuanLyChiTieu.Form1.resources
+D:\Quản lí chi tiêu\QuanLyChiTieu\obj\Debug\net6.0-windows\QuanLyChiTieu.csproj.GenerateResource.cache
+D:\Quản lí chi tiêu\QuanLyChiTieu\obj\Debug\net6.0-windows\QuanLyChiTieu.sourcelink.json

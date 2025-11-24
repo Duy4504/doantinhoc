@@ -4,17 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Forms.DataVisualization.Charting;  // Chart WinForms
 using Timer = System.Windows.Forms.Timer;
-using ScottPlot;
-using ScottPlot.WinForms;
-using System.Windows.Forms;
-using ScottPlot.WinForms;
+
+
 
 namespace QuanLyChiTieu
 {
     public partial class Form1 : Form
     {
+        // Runtime-created chart for monthly expenses (created when missing in Designer)
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartMonthly;
+
         List<Expense> expenses;
         List<Debt> debts;
         System.Windows.Forms.Timer notifyTimer;
@@ -219,18 +220,61 @@ namespace QuanLyChiTieu
 
         private void PopulateChartForYear(int year)
         {
-            chartMonthly.Series.Clear();
-            chartMonthly.ChartAreas.Clear();
-            chartMonthly.ChartAreas.Add(new ChartArea("Default"));
+            // Ensure chart exists (create at runtime if Designer doesn't have it)
+            if (this.chartMonthly == null)
+            {
+                this.chartMonthly = new System.Windows.Forms.DataVisualization.Charting.Chart();
+                var chartArea = new System.Windows.Forms.DataVisualization.Charting.ChartArea("Default");
+                this.chartMonthly.ChartAreas.Add(chartArea);
+                this.chartMonthly.Legends.Add(new System.Windows.Forms.DataVisualization.Charting.Legend("Legend1"));
+                this.chartMonthly.Name = "chartMonthly";
+                this.chartMonthly.Size = new System.Drawing.Size(760, 300);
+                this.chartMonthly.Location = new System.Drawing.Point(12, 300);
+                this.chartMonthly.TabIndex = 0;
+                this.chartMonthly.Text = "Biểu đồ theo tháng";
+                try
+                {
+                    // Try to add into an existing panel named 'panelChart' if present, otherwise add to form controls
+                    var panel = this.Controls.Cast<System.Windows.Forms.Control>().FirstOrDefault(c => c.Name == "panelChart");
+                    if (panel != null)
+                        panel.Controls.Add(this.chartMonthly);
+                    else
+                        this.Controls.Add(this.chartMonthly);
+                }
+                catch { }
+            }
 
-            var seriesThu = new Series("Thu") { ChartType = SeriesChartType.Column, XValueType = ChartValueType.String };
-            var seriesChi = new Series("Chi") { ChartType = SeriesChartType.Column, XValueType = ChartValueType.String };
+            if (chartMonthly.ChartAreas.Count == 0)
+                chartMonthly.ChartAreas.Add(new ChartArea("Default"));
+
+            chartMonthly.Series.Clear();
+
+            var area = chartMonthly.ChartAreas[0];
+            area.AxisX.Interval = 1;
+            area.AxisX.Title = "Tháng";
+            area.AxisY.Title = "Số tiền";
+
+            var seriesThu = new Series("Thu")
+            {
+                ChartType = SeriesChartType.Column,
+                XValueType = ChartValueType.String
+            };
+            var seriesChi = new Series("Chi")
+            {
+                ChartType = SeriesChartType.Column,
+                XValueType = ChartValueType.String
+            };
 
             for (int m = 1; m <= 12; m++)
             {
                 var monthData = expenses.Where(x => x.Date.Year == year && x.Date.Month == m);
-                double thu = monthData.Where(x => x.Type == "Thu").Sum(x => x.Amount);
-                double chi = monthData.Where(x => x.Type == "Chi").Sum(x => x.Amount);
+                double thu = 0;
+                double chi = 0;
+                if (monthData.Any())
+                {
+                    thu = monthData.Where(x => x.Type == "Thu").Sum(x => x.Amount);
+                    chi = monthData.Where(x => x.Type == "Chi").Sum(x => x.Amount);
+                }
 
                 seriesThu.Points.AddXY(m.ToString(), thu);
                 seriesChi.Points.AddXY(m.ToString(), chi);
@@ -238,8 +282,12 @@ namespace QuanLyChiTieu
 
             chartMonthly.Series.Add(seriesThu);
             chartMonthly.Series.Add(seriesChi);
+
             chartMonthly.Invalidate();
         }
+
+
+
 
         private void btnRefreshChart_Click(object sender, EventArgs e)
         {

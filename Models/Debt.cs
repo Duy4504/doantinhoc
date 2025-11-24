@@ -6,12 +6,12 @@ namespace QuanLyChiTieu.Models
     {
         public string? Name { get; set; }
         public double OriginalAmount { get; set; }
-        public double InterestRate { get; set; } // %
+        public double InterestRate { get; set; } 
         public DateTime DueDate { get; set; }
 
         public double TotalAmount()
         {
-            // tính lãi 1 lần theo lãi suất (đơn giản)
+            // tính lãi 1 lần theo lãi suất 
             return OriginalAmount + (OriginalAmount * InterestRate / 100.0);
         }
     }
